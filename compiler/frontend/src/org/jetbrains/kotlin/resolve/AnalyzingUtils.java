@@ -72,15 +72,18 @@ public class AnalyzingUtils {
     // --------------------------------------------------------------------------------------------------------------------------
 
     public static String formDebugNameForBindingTrace(@NotNull String debugName, @Nullable Object resolutionSubjectForMessage) {
-        StringBuilder debugInfo = new StringBuilder(debugName);
-        if (resolutionSubjectForMessage instanceof KtElement) {
-            KtElement element = (KtElement) resolutionSubjectForMessage;
-            debugInfo.append(" ").append(DebugTextUtilKt.getDebugText(element));
-            debugInfo.append(" in ").append(element.getContainingFile().getName());
-        }
-        else if (resolutionSubjectForMessage != null) {
-            debugInfo.append(" ").append(resolutionSubjectForMessage);
-        }
-        return debugInfo.toString();
+        //StringBuilder debugInfo = new StringBuilder(debugName);
+        //if (resolutionSubjectForMessage instanceof KtElement) {
+        //    KtElement element = (KtElement) resolutionSubjectForMessage;
+        //    debugInfo.append(" ").append(DebugTextUtilKt.getDebugText(element));
+        //    //debugInfo.append(" in ").append(element.getContainingFile().getName());
+        //    debugInfo.append(" in ").append(element.getContainingKtFile().getName()).append(" ").append(element.getTextOffset());
+        //}
+        //else if (resolutionSubjectForMessage != null) {
+        //    debugInfo.append(" ").append(resolutionSubjectForMessage);
+        //}
+        //
+        //return debugInfo.toString();
+        return "";
     }
 }
