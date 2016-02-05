@@ -35,7 +35,7 @@ public class SlicedMapImpl implements MutableSlicedMap {
         return new SlicedMapImpl();
     }
 
-    private final Map<Object, UserDataHolderImpl> map = new THashMap<Object, UserDataHolderImpl>(0);
+    private final Map<WritableSlice<?, ?>, Map<Object, UserDataHolderImpl>> map = new THashMap<WritableSlice<?, ?>, Map<Object, UserDataHolderImpl>>(0);
     private Multimap<WritableSlice<?, ?>, Object> collectiveSliceKeys = null;
 
     @Override
@@ -44,10 +44,16 @@ public class SlicedMapImpl implements MutableSlicedMap {
             return;
         }
 
-        UserDataHolderImpl holder = map.get(key);
+        Map<Object, UserDataHolderImpl> sliceMap = map.get(slice);
+        if (sliceMap == null) {
+            sliceMap = new THashMap<Object, UserDataHolderImpl>(0);
+            map.put(slice, sliceMap);
+        }
+
+        UserDataHolderImpl holder = sliceMap.get(key);
         if (holder == null) {
             holder = new UserDataHolderImpl();
-            map.put(key, holder);
+            sliceMap.put(key, holder);
         }
 
         Key<V> sliceKey = slice.getKey();
@@ -83,9 +89,13 @@ public class SlicedMapImpl implements MutableSlicedMap {
 
     @Override
     public <K, V> V get(ReadOnlySlice<K, V> slice, K key) {
-        UserDataHolderImpl holder = map.get(key);
+        Map<Object, UserDataHolderImpl> sliceMap = this.map.get(slice);
+        V value = null;
 
-        V value = holder == null ? null : holder.getUserData(slice.getKey());
+        if (sliceMap != null) {
+            UserDataHolderImpl holder = sliceMap.get(key);
+            value = holder == null ? null : holder.getUserData(slice.getKey());
+        }
 
         return slice.computeValue(this, key, value, value == null);
     }
@@ -101,16 +111,18 @@ public class SlicedMapImpl implements MutableSlicedMap {
 
     @Override
     public void forEach(@NotNull Function3<WritableSlice, Object, Object, Void> f) {
-        for (Map.Entry<Object, UserDataHolderImpl> entry : map.entrySet()) {
-            Object key = entry.getKey();
-            UserDataHolderImpl holder = entry.getValue();
+        for (Map.Entry<WritableSlice<?, ?>, Map<Object, UserDataHolderImpl>> sliceMapEntry : map.entrySet()) {
+            for (Map.Entry<Object, UserDataHolderImpl> entry : sliceMapEntry.getValue().entrySet()) {
+                Object key = entry.getKey();
+                UserDataHolderImpl holder = entry.getValue();
 
-            if (holder == null) continue;
+                if (holder == null) continue;
 
-            for (Key<?> sliceKey : holder.getKeys()) {
-                Object value = holder.getUserData(sliceKey);
+                for (Key<?> sliceKey : holder.getKeys()) {
+                    Object value = holder.getUserData(sliceKey);
 
-                f.invoke(((AbstractWritableSlice) sliceKey).getSlice(), key, value);
+                    f.invoke(((AbstractWritableSlice) sliceKey).getSlice(), key, value);
+                }
             }
         }
     }
@@ -120,15 +132,18 @@ public class SlicedMapImpl implements MutableSlicedMap {
     public <K, V> ImmutableMap<K, V> getSliceContents(@NotNull ReadOnlySlice<K, V> slice) {
         ImmutableMap.Builder<K, V> builder = ImmutableMap.builder();
 
-        for (Map.Entry<Object, UserDataHolderImpl> entry : map.entrySet()) {
+        Map<Object, UserDataHolderImpl> sliceMap = this.map.get(slice);
+        if (sliceMap != null) {
+            for (Map.Entry<Object, UserDataHolderImpl> entry : sliceMap.entrySet()) {
 
-            UserDataHolder holder = entry.getValue();
+                UserDataHolder holder = entry.getValue();
 
-            V value = holder.getUserData(slice.getKey());
+                V value = holder.getUserData(slice.getKey());
 
-            if (value != null) {
-                //noinspection unchecked
-                builder.put((K) entry.getKey(), value);
+                if (value != null) {
+                    //noinspection unchecked
+                    builder.put((K) entry.getKey(), value);
+                }
             }
         }
         return builder.build();

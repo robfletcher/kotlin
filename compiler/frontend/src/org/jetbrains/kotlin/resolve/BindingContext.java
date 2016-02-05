@@ -86,60 +86,77 @@ public interface BindingContext {
         }
     };
 
-    WritableSlice<KtAnnotationEntry, AnnotationDescriptor> ANNOTATION = Slices.createSimpleSlice();
+    WritableSlice<KtAnnotationEntry, AnnotationDescriptor> ANNOTATION =
+            new BasicWritableSlice<KtAnnotationEntry, AnnotationDescriptor>(Slices.ONLY_REWRITE_TO_EQUAL, "ANNOTATION") {};
 
-    WritableSlice<KtExpression, CompileTimeConstant<?>> COMPILE_TIME_VALUE = Slices.createSimpleSlice();
+    WritableSlice<KtExpression, CompileTimeConstant<?>> COMPILE_TIME_VALUE =
+            new BasicWritableSlice<KtExpression, CompileTimeConstant<?>>(Slices.ONLY_REWRITE_TO_EQUAL, "COMPILE_TIME_VALUE") {};
 
-    WritableSlice<KtTypeReference, KotlinType> TYPE = Slices.createSimpleSlice();
-    WritableSlice<KtExpression, KotlinTypeInfo> EXPRESSION_TYPE_INFO = new BasicWritableSlice<KtExpression, KotlinTypeInfo>(DO_NOTHING);
-    WritableSlice<KtExpression, KotlinType> EXPECTED_EXPRESSION_TYPE = new BasicWritableSlice<KtExpression, KotlinType>(DO_NOTHING);
-    WritableSlice<KtFunction, KotlinType> EXPECTED_RETURN_TYPE = new BasicWritableSlice<KtFunction, KotlinType>(DO_NOTHING);
-    WritableSlice<KtExpression, DataFlowInfo> DATAFLOW_INFO_AFTER_CONDITION = Slices.createSimpleSlice();
+    WritableSlice<KtTypeReference, KotlinType> TYPE = new BasicWritableSlice<KtTypeReference, KotlinType>(Slices.ONLY_REWRITE_TO_EQUAL, "TYPE") {};
+    WritableSlice<KtExpression, KotlinTypeInfo> EXPRESSION_TYPE_INFO = new BasicWritableSlice<KtExpression, KotlinTypeInfo>(DO_NOTHING) {};
+    WritableSlice<KtExpression, KotlinType> EXPECTED_EXPRESSION_TYPE = new BasicWritableSlice<KtExpression, KotlinType>(DO_NOTHING) {};
+    WritableSlice<KtFunction, KotlinType> EXPECTED_RETURN_TYPE = new BasicWritableSlice<KtFunction, KotlinType>(DO_NOTHING) {};
+    WritableSlice<KtExpression, DataFlowInfo> DATAFLOW_INFO_AFTER_CONDITION =
+            new BasicWritableSlice<KtExpression, DataFlowInfo>(Slices.ONLY_REWRITE_TO_EQUAL, "DATAFLOW_INFO_AFTER_CONDITION") {};
 
     /**
      * A qualifier corresponds to a receiver expression (if any). For 'A.B' qualifier is recorded for 'A'.
      */
-    WritableSlice<KtExpression, Qualifier> QUALIFIER = new BasicWritableSlice<KtExpression, Qualifier>(DO_NOTHING);
+    WritableSlice<KtExpression, Qualifier> QUALIFIER = new BasicWritableSlice<KtExpression, Qualifier>(DO_NOTHING, "QUALIFIER") {};
 
     WritableSlice<KtReferenceExpression, DeclarationDescriptor> REFERENCE_TARGET =
-            new BasicWritableSlice<KtReferenceExpression, DeclarationDescriptor>(DO_NOTHING);
+            new BasicWritableSlice<KtReferenceExpression, DeclarationDescriptor>(DO_NOTHING, "REFERENCE_TARGET") {};
     // if 'A' really means 'A.Companion' then this slice stores class descriptor for A, REFERENCE_TARGET stores descriptor Companion in this case
     WritableSlice<KtReferenceExpression, ClassDescriptor> SHORT_REFERENCE_TO_COMPANION_OBJECT =
-            new BasicWritableSlice<KtReferenceExpression, ClassDescriptor>(DO_NOTHING);
+            new BasicWritableSlice<KtReferenceExpression, ClassDescriptor>(DO_NOTHING, "SHORT_REFERENCE_TO_COMPANION_OBJECT") {};
 
-    WritableSlice<Call, ResolvedCall<?>> RESOLVED_CALL = new BasicWritableSlice<Call, ResolvedCall<?>>(DO_NOTHING);
-    WritableSlice<ResolvedCall<?>, TailRecursionKind> TAIL_RECURSION_CALL = Slices.createSimpleSlice();
-    WritableSlice<KtElement, ConstraintSystemCompleter> CONSTRAINT_SYSTEM_COMPLETER = new BasicWritableSlice<KtElement, ConstraintSystemCompleter>(DO_NOTHING);
-    WritableSlice<KtElement, Call> CALL = new BasicWritableSlice<KtElement, Call>(DO_NOTHING);
+    WritableSlice<Call, ResolvedCall<?>> RESOLVED_CALL = new BasicWritableSlice<Call, ResolvedCall<?>>(DO_NOTHING, "RESOLVED_CALL") {};
+    WritableSlice<ResolvedCall<?>, TailRecursionKind> TAIL_RECURSION_CALL =
+            new BasicWritableSlice<ResolvedCall<?>, TailRecursionKind>(Slices.ONLY_REWRITE_TO_EQUAL, "TAIL_RECURSION_CALL") {};
+    WritableSlice<KtElement, ConstraintSystemCompleter> CONSTRAINT_SYSTEM_COMPLETER = new BasicWritableSlice<KtElement, ConstraintSystemCompleter>(DO_NOTHING, "CONSTRAINT_SYSTEM_COMPLETER") {};
+    WritableSlice<KtElement, Call> CALL = new BasicWritableSlice<KtElement, Call>(DO_NOTHING, "CALL") {};
 
     WritableSlice<KtExpression, Collection<? extends DeclarationDescriptor>> AMBIGUOUS_REFERENCE_TARGET =
-            new BasicWritableSlice<KtExpression, Collection<? extends DeclarationDescriptor>>(DO_NOTHING);
+            new BasicWritableSlice<KtExpression, Collection<? extends DeclarationDescriptor>>(DO_NOTHING, "AMBIGUOUS_REFERENCE_TARGET") {};
 
-    WritableSlice<KtExpression, ResolvedCall<FunctionDescriptor>> LOOP_RANGE_ITERATOR_RESOLVED_CALL = Slices.createSimpleSlice();
+    WritableSlice<KtExpression, ResolvedCall<FunctionDescriptor>> LOOP_RANGE_ITERATOR_RESOLVED_CALL =
+            new BasicWritableSlice<KtExpression, ResolvedCall<FunctionDescriptor>>(Slices.ONLY_REWRITE_TO_EQUAL, "LOOP_RANGE_ITERATOR_RESOLVED_CALL") {};
 
-    WritableSlice<KtExpression, ResolvedCall<FunctionDescriptor>> LOOP_RANGE_HAS_NEXT_RESOLVED_CALL = Slices.createSimpleSlice();
-    WritableSlice<KtExpression, ResolvedCall<FunctionDescriptor>> LOOP_RANGE_NEXT_RESOLVED_CALL = Slices.createSimpleSlice();
+    WritableSlice<KtExpression, ResolvedCall<FunctionDescriptor>> LOOP_RANGE_HAS_NEXT_RESOLVED_CALL =
+            new BasicWritableSlice<KtExpression, ResolvedCall<FunctionDescriptor>>(Slices.ONLY_REWRITE_TO_EQUAL, "LOOP_RANGE_HAS_NEXT_RESOLVED_CALL") {};
+    WritableSlice<KtExpression, ResolvedCall<FunctionDescriptor>> LOOP_RANGE_NEXT_RESOLVED_CALL =
+            new BasicWritableSlice<KtExpression, ResolvedCall<FunctionDescriptor>>(Slices.ONLY_REWRITE_TO_EQUAL, "LOOP_RANGE_NEXT_RESOLVED_CALL") {};
 
-    WritableSlice<PropertyAccessorDescriptor, ResolvedCall<FunctionDescriptor>> DELEGATED_PROPERTY_RESOLVED_CALL = Slices.createSimpleSlice();
-    WritableSlice<PropertyAccessorDescriptor, Call> DELEGATED_PROPERTY_CALL = Slices.createSimpleSlice();
+    WritableSlice<PropertyAccessorDescriptor, ResolvedCall<FunctionDescriptor>> DELEGATED_PROPERTY_RESOLVED_CALL =
+            new BasicWritableSlice<PropertyAccessorDescriptor, ResolvedCall<FunctionDescriptor>>(Slices.ONLY_REWRITE_TO_EQUAL, "DELEGATED_PROPERTY_RESOLVED_CALL") {};
+    WritableSlice<PropertyAccessorDescriptor, Call> DELEGATED_PROPERTY_CALL =
+            new BasicWritableSlice<PropertyAccessorDescriptor, Call>(Slices.ONLY_REWRITE_TO_EQUAL, "DELEGATED_PROPERTY_CALL") {};
 
-    WritableSlice<PropertyDescriptor, ResolvedCall<FunctionDescriptor>> DELEGATED_PROPERTY_PD_RESOLVED_CALL = Slices.createSimpleSlice();
+    WritableSlice<PropertyDescriptor, ResolvedCall<FunctionDescriptor>> DELEGATED_PROPERTY_PD_RESOLVED_CALL =
+            new BasicWritableSlice<PropertyDescriptor, ResolvedCall<FunctionDescriptor>>(Slices.ONLY_REWRITE_TO_EQUAL, "DELEGATED_PROPERTY_PD_RESOLVED_CALL") {};
 
-    WritableSlice<KtDestructuringDeclarationEntry, ResolvedCall<FunctionDescriptor>> COMPONENT_RESOLVED_CALL = Slices.createSimpleSlice();
+    WritableSlice<KtDestructuringDeclarationEntry, ResolvedCall<FunctionDescriptor>> COMPONENT_RESOLVED_CALL =
+            new BasicWritableSlice<KtDestructuringDeclarationEntry, ResolvedCall<FunctionDescriptor>>(Slices.ONLY_REWRITE_TO_EQUAL, "COMPONENT_RESOLVED_CALL") {};
 
-    WritableSlice<KtExpression, ResolvedCall<FunctionDescriptor>> INDEXED_LVALUE_GET = Slices.createSimpleSlice();
-    WritableSlice<KtExpression, ResolvedCall<FunctionDescriptor>> INDEXED_LVALUE_SET = Slices.createSimpleSlice();
+    WritableSlice<KtExpression, ResolvedCall<FunctionDescriptor>> INDEXED_LVALUE_GET =
+            new BasicWritableSlice<KtExpression, ResolvedCall<FunctionDescriptor>>(Slices.ONLY_REWRITE_TO_EQUAL, "INDEXED_LVALUE_GET") {};
+    WritableSlice<KtExpression, ResolvedCall<FunctionDescriptor>> INDEXED_LVALUE_SET =
+            new BasicWritableSlice<KtExpression, ResolvedCall<FunctionDescriptor>>(Slices.ONLY_REWRITE_TO_EQUAL, "INDEXED_LVALUE_SET") {};
 
-    WritableSlice<KtExpression, KotlinType> SMARTCAST = Slices.createSimpleSlice();
-    WritableSlice<KtExpression, Boolean> SMARTCAST_NULL = Slices.createSimpleSlice();
-    WritableSlice<KtExpression, KotlinType> IMPLICIT_RECEIVER_SMARTCAST = Slices.createSimpleSlice();
+    WritableSlice<KtExpression, KotlinType> SMARTCAST = new BasicWritableSlice<KtExpression, KotlinType>(Slices.ONLY_REWRITE_TO_EQUAL, "SMARTCAST") {};
+    WritableSlice<KtExpression, Boolean> SMARTCAST_NULL = new BasicWritableSlice<KtExpression, Boolean>(Slices.ONLY_REWRITE_TO_EQUAL, "SMARTCAST_NULL") {};
+    WritableSlice<KtExpression, KotlinType> IMPLICIT_RECEIVER_SMARTCAST =
+            new BasicWritableSlice<KtExpression, KotlinType>(Slices.ONLY_REWRITE_TO_EQUAL, "IMPLICIT_RECEIVER_SMARTCAST") {};
 
-    WritableSlice<KtWhenExpression, Boolean> EXHAUSTIVE_WHEN = Slices.createSimpleSlice();
-    WritableSlice<KtWhenExpression, Boolean> IMPLICIT_EXHAUSTIVE_WHEN = Slices.createSimpleSlice();
+    WritableSlice<KtWhenExpression, Boolean> EXHAUSTIVE_WHEN =
+            new BasicWritableSlice<KtWhenExpression, Boolean>(Slices.ONLY_REWRITE_TO_EQUAL, "EXHAUSTIVE_WHEN") {};
+    WritableSlice<KtWhenExpression, Boolean> IMPLICIT_EXHAUSTIVE_WHEN =
+            new BasicWritableSlice<KtWhenExpression, Boolean>(Slices.ONLY_REWRITE_TO_EQUAL, "IMPLICIT_EXHAUSTIVE_WHEN") {};
 
-    WritableSlice<KtElement, LexicalScope> LEXICAL_SCOPE = Slices.createSimpleSlice();
+    WritableSlice<KtElement, LexicalScope> LEXICAL_SCOPE = new BasicWritableSlice<KtElement, LexicalScope>(Slices.ONLY_REWRITE_TO_EQUAL, "LEXICAL_SCOPE") {};
 
-    WritableSlice<ScriptDescriptor, LexicalScope> SCRIPT_SCOPE = Slices.createSimpleSlice();
+    WritableSlice<ScriptDescriptor, LexicalScope> SCRIPT_SCOPE =
+            new BasicWritableSlice<ScriptDescriptor, LexicalScope>(Slices.ONLY_REWRITE_TO_EQUAL, "SCRIPT_SCOPE") {};
 
     WritableSlice<KtExpression, Boolean> VARIABLE_REASSIGNMENT = Slices.createSimpleSetSlice();
     WritableSlice<ValueParameterDescriptor, Boolean> AUTO_CREATED_IT = Slices.createSimpleSetSlice();
@@ -148,16 +165,16 @@ public interface BindingContext {
      * Has type of current expression has been already resolved
      */
     WritableSlice<KtExpression, Boolean> PROCESSED = Slices.createSimpleSetSlice();
-    WritableSlice<KtElement, Boolean> USED_AS_EXPRESSION = Slices.createSimpleSetSlice();
-    WritableSlice<KtElement, Boolean> USED_AS_RESULT_OF_LAMBDA = Slices.createSimpleSetSlice();
-    WritableSlice<KtElement, Boolean> UNREACHABLE_CODE = Slices.createSimpleSetSlice();
+    WritableSlice<KtElement, Boolean> USED_AS_EXPRESSION = Slices.createSimpleSetWithDefaultSlice(true);
+    WritableSlice<KtElement, Boolean> USED_AS_RESULT_OF_LAMBDA = Slices.createSimpleSetWithDefaultSlice(false);
+    WritableSlice<KtElement, Boolean> UNREACHABLE_CODE = Slices.createSimpleSetWithDefaultSlice(false);
 
-    WritableSlice<VariableDescriptor, CaptureKind> CAPTURED_IN_CLOSURE = new BasicWritableSlice<VariableDescriptor, CaptureKind>(DO_NOTHING);
-    WritableSlice<KtDeclaration, PreliminaryDeclarationVisitor> PRELIMINARY_VISITOR = new BasicWritableSlice<KtDeclaration, PreliminaryDeclarationVisitor>(DO_NOTHING);
+    WritableSlice<VariableDescriptor, CaptureKind> CAPTURED_IN_CLOSURE = new BasicWritableSlice<VariableDescriptor, CaptureKind>(DO_NOTHING, "CAPTURED_IN_CLOSURE") {};
+    WritableSlice<KtDeclaration, PreliminaryDeclarationVisitor> PRELIMINARY_VISITOR = new BasicWritableSlice<KtDeclaration, PreliminaryDeclarationVisitor>(DO_NOTHING, "PRELIMINARY_VISITOR") {};
 
     WritableSlice<Box<DeferredType>, Boolean> DEFERRED_TYPE = Slices.createCollectiveSetSlice();
 
-    WritableSlice<PropertyDescriptor, Boolean> BACKING_FIELD_REQUIRED = new Slices.SetSlice<PropertyDescriptor>(DO_NOTHING) {
+    WritableSlice<PropertyDescriptor, Boolean> BACKING_FIELD_REQUIRED = new SetSlice<PropertyDescriptor>(false, DO_NOTHING) {
         @Override
         public Boolean computeValue(
                 SlicedMap map,
@@ -191,7 +208,7 @@ public interface BindingContext {
     };
     WritableSlice<PropertyDescriptor, Boolean> IS_UNINITIALIZED = Slices.createSimpleSetSlice();
 
-    WritableSlice<KtLambdaExpression, Boolean> BLOCK = new Slices.SetSlice<KtLambdaExpression>(DO_NOTHING) {
+    WritableSlice<KtLambdaExpression, Boolean> BLOCK = new SetSlice<KtLambdaExpression>(false, DO_NOTHING) {
         @Override
         public Boolean computeValue(SlicedMap map, KtLambdaExpression expression, Boolean isBlock, boolean valueNotFound) {
             isBlock = valueNotFound ? false : isBlock;
@@ -199,20 +216,27 @@ public interface BindingContext {
         }
     };
 
-    WritableSlice<PsiElement, ClassDescriptor> CLASS = Slices.createSimpleSlice();
-    WritableSlice<PsiElement, ScriptDescriptor> SCRIPT = Slices.createSimpleSlice();
-    WritableSlice<KtTypeParameter, TypeParameterDescriptor> TYPE_PARAMETER = Slices.createSimpleSlice();
+    WritableSlice<PsiElement, ClassDescriptor> CLASS = new BasicWritableSlice<PsiElement, ClassDescriptor>(Slices.ONLY_REWRITE_TO_EQUAL, "CLASS") {};
+    WritableSlice<PsiElement, ScriptDescriptor> SCRIPT = new BasicWritableSlice<PsiElement, ScriptDescriptor>(Slices.ONLY_REWRITE_TO_EQUAL, "SCRIPT") {};
+    WritableSlice<KtTypeParameter, TypeParameterDescriptor> TYPE_PARAMETER =
+            new BasicWritableSlice<KtTypeParameter, TypeParameterDescriptor>(Slices.ONLY_REWRITE_TO_EQUAL, "TYPE_PARAMETER") {};
     /**
      * @see BindingContextUtils#recordFunctionDeclarationToDescriptor(BindingTrace, PsiElement, SimpleFunctionDescriptor)}
      */
-    WritableSlice<PsiElement, SimpleFunctionDescriptor> FUNCTION = Slices.createSimpleSlice();
-    WritableSlice<PsiElement, ConstructorDescriptor> CONSTRUCTOR = Slices.createSimpleSlice();
+    WritableSlice<PsiElement, SimpleFunctionDescriptor> FUNCTION =
+            new BasicWritableSlice<PsiElement, SimpleFunctionDescriptor>(Slices.ONLY_REWRITE_TO_EQUAL, "FUNCTION") {};
+    WritableSlice<PsiElement, ConstructorDescriptor> CONSTRUCTOR =
+            new BasicWritableSlice<PsiElement, ConstructorDescriptor>(Slices.ONLY_REWRITE_TO_EQUAL, "CONSTRUCTOR") {};
     WritableSlice<ConstructorDescriptor, ResolvedCall<ConstructorDescriptor>> CONSTRUCTOR_RESOLVED_DELEGATION_CALL =
-            Slices.createSimpleSlice();
-    WritableSlice<PsiElement, VariableDescriptor> VARIABLE = Slices.createSimpleSlice();
-    WritableSlice<KtParameter, VariableDescriptor> VALUE_PARAMETER = Slices.createSimpleSlice();
-    WritableSlice<KtPropertyAccessor, PropertyAccessorDescriptor> PROPERTY_ACCESSOR = Slices.createSimpleSlice();
-    WritableSlice<PsiElement, PropertyDescriptor> PRIMARY_CONSTRUCTOR_PARAMETER = Slices.createSimpleSlice();
+            new BasicWritableSlice<ConstructorDescriptor, ResolvedCall<ConstructorDescriptor>>(Slices.ONLY_REWRITE_TO_EQUAL, "CONSTRUCTOR_RESOLVED_DELEGATION_CALL") {};
+    WritableSlice<PsiElement, VariableDescriptor> VARIABLE =
+            new BasicWritableSlice<PsiElement, VariableDescriptor>(Slices.ONLY_REWRITE_TO_EQUAL, "VARIABLE") {};
+    WritableSlice<KtParameter, VariableDescriptor> VALUE_PARAMETER =
+            new BasicWritableSlice<KtParameter, VariableDescriptor>(Slices.ONLY_REWRITE_TO_EQUAL, "VALUE_PARAMETER") {};
+    WritableSlice<KtPropertyAccessor, PropertyAccessorDescriptor> PROPERTY_ACCESSOR =
+            new BasicWritableSlice<KtPropertyAccessor, PropertyAccessorDescriptor>(Slices.ONLY_REWRITE_TO_EQUAL, "PROPERTY_ACCESSOR") {};
+    WritableSlice<PsiElement, PropertyDescriptor> PRIMARY_CONSTRUCTOR_PARAMETER =
+            new BasicWritableSlice<PsiElement, PropertyDescriptor>(Slices.ONLY_REWRITE_TO_EQUAL, "PRIMARY_CONSTRUCTOR_PARAMETER") {};
 
     WritableSlice[] DECLARATIONS_TO_DESCRIPTORS = new WritableSlice[] {
             CLASS, TYPE_PARAMETER, FUNCTION, CONSTRUCTOR, VARIABLE, VALUE_PARAMETER, PROPERTY_ACCESSOR,
@@ -225,17 +249,24 @@ public interface BindingContext {
                     .setFurtherLookupSlices(DECLARATIONS_TO_DESCRIPTORS)
                     .build();
 
-    WritableSlice<KtReferenceExpression, PsiElement> LABEL_TARGET = Slices.createSimpleSlice();
-    WritableSlice<KtReferenceExpression, Collection<? extends PsiElement>> AMBIGUOUS_LABEL_TARGET = Slices.createSimpleSlice();
-    WritableSlice<ValueParameterDescriptor, PropertyDescriptor> VALUE_PARAMETER_AS_PROPERTY = Slices.createSimpleSlice();
+    WritableSlice<KtReferenceExpression, PsiElement> LABEL_TARGET =
+            new BasicWritableSlice<KtReferenceExpression, PsiElement>(Slices.ONLY_REWRITE_TO_EQUAL, "LABEL_TARGET") {};
+    WritableSlice<KtReferenceExpression, Collection<? extends PsiElement>> AMBIGUOUS_LABEL_TARGET =
+            new BasicWritableSlice<KtReferenceExpression, Collection<? extends PsiElement>>(Slices.ONLY_REWRITE_TO_EQUAL, "AMBIGUOUS_LABEL_TARGET") {};
+    WritableSlice<ValueParameterDescriptor, PropertyDescriptor> VALUE_PARAMETER_AS_PROPERTY =
+            new BasicWritableSlice<ValueParameterDescriptor, PropertyDescriptor>(Slices.ONLY_REWRITE_TO_EQUAL, "VALUE_PARAMETER_AS_PROPERTY") {};
 
-    WritableSlice<ValueParameterDescriptor, FunctionDescriptor> DATA_CLASS_COMPONENT_FUNCTION = Slices.createSimpleSlice();
-    WritableSlice<ClassDescriptor, FunctionDescriptor> DATA_CLASS_COPY_FUNCTION = Slices.createSimpleSlice();
+    WritableSlice<ValueParameterDescriptor, FunctionDescriptor> DATA_CLASS_COMPONENT_FUNCTION =
+            new BasicWritableSlice<ValueParameterDescriptor, FunctionDescriptor>(Slices.ONLY_REWRITE_TO_EQUAL, "DATA_CLASS_COMPONENT_FUNCTION") {};
+    WritableSlice<ClassDescriptor, FunctionDescriptor> DATA_CLASS_COPY_FUNCTION =
+            new BasicWritableSlice<ClassDescriptor, FunctionDescriptor>(Slices.ONLY_REWRITE_TO_EQUAL, "DATA_CLASS_COPY_FUNCTION") {};
 
     WritableSlice<FqNameUnsafe, ClassDescriptor> FQNAME_TO_CLASS_DESCRIPTOR =
-            new BasicWritableSlice<FqNameUnsafe, ClassDescriptor>(DO_NOTHING, true);
-    WritableSlice<KtFile, PackageFragmentDescriptor> FILE_TO_PACKAGE_FRAGMENT = Slices.createSimpleSlice();
-    WritableSlice<FqName, Collection<KtFile>> PACKAGE_TO_FILES = Slices.createSimpleSlice();
+            new BasicWritableSlice<FqNameUnsafe, ClassDescriptor>(DO_NOTHING, true, "FQNAME_TO_CLASS_DESCRIPTOR") {};
+    WritableSlice<KtFile, PackageFragmentDescriptor> FILE_TO_PACKAGE_FRAGMENT =
+            new BasicWritableSlice<KtFile, PackageFragmentDescriptor>(Slices.ONLY_REWRITE_TO_EQUAL, "FILE_TO_PACKAGE_FRAGMENT") {};
+    WritableSlice<FqName, Collection<KtFile>> PACKAGE_TO_FILES =
+            new BasicWritableSlice<FqName, Collection<KtFile>>(Slices.ONLY_REWRITE_TO_EQUAL, "PACKAGE_TO_FILES") {};
 
     @SuppressWarnings("UnusedDeclaration")
     @Deprecated // This field is needed only for the side effects of its initializer

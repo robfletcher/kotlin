@@ -47,8 +47,22 @@ public class BasicWritableSlice<K, V> extends AbstractWritableSlice<K, V> {
         this(rewritePolicy, false);
     }
 
+    public BasicWritableSlice(RewritePolicy rewritePolicy, String debugName) {
+        super(debugName);
+
+        this.rewritePolicy = rewritePolicy;
+        this.isCollective = false;
+    }
+
     public BasicWritableSlice(RewritePolicy rewritePolicy, boolean isCollective) {
         super("<BasicWritableSlice>");
+
+        this.rewritePolicy = rewritePolicy;
+        this.isCollective = isCollective;
+    }
+
+    public BasicWritableSlice(RewritePolicy rewritePolicy, boolean isCollective, String debugName) {
+        super(debugName);
 
         this.rewritePolicy = rewritePolicy;
         this.isCollective = isCollective;

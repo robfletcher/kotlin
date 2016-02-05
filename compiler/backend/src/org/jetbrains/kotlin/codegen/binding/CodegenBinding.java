@@ -41,24 +41,31 @@ import java.util.*;
 import static org.jetbrains.kotlin.resolve.BindingContext.*;
 
 public class CodegenBinding {
-    public static final WritableSlice<ClassDescriptor, MutableClosure> CLOSURE = Slices.createSimpleSlice();
+    public static final WritableSlice<ClassDescriptor, MutableClosure> CLOSURE =
+            new BasicWritableSlice<ClassDescriptor, MutableClosure>(Slices.ONLY_REWRITE_TO_EQUAL);
 
-    public static final WritableSlice<CallableDescriptor, ClassDescriptor> CLASS_FOR_CALLABLE = Slices.createSimpleSlice();
+    public static final WritableSlice<CallableDescriptor, ClassDescriptor> CLASS_FOR_CALLABLE =
+            new BasicWritableSlice<CallableDescriptor, ClassDescriptor>(Slices.ONLY_REWRITE_TO_EQUAL);
 
-    public static final WritableSlice<ClassDescriptor, Type> ASM_TYPE = Slices.createSimpleSlice();
+    public static final WritableSlice<ClassDescriptor, Type> ASM_TYPE =
+            new BasicWritableSlice<ClassDescriptor, Type>(Slices.ONLY_REWRITE_TO_EQUAL);
 
     public static final WritableSlice<ClassDescriptor, Boolean> ENUM_ENTRY_CLASS_NEED_SUBCLASS = Slices.createSimpleSetSlice();
 
-    public static final WritableSlice<ClassDescriptor, Collection<ClassDescriptor>> INNER_CLASSES = Slices.createSimpleSlice();
+    public static final WritableSlice<ClassDescriptor, Collection<ClassDescriptor>> INNER_CLASSES =
+            new BasicWritableSlice<ClassDescriptor, Collection<ClassDescriptor>>(Slices.ONLY_REWRITE_TO_EQUAL);
 
-    public static final WritableSlice<KtExpression, SamType> SAM_VALUE = Slices.createSimpleSlice();
+    public static final WritableSlice<KtExpression, SamType> SAM_VALUE =
+            new BasicWritableSlice<KtExpression, SamType>(Slices.ONLY_REWRITE_TO_EQUAL);
 
-    public static final WritableSlice<KtCallElement, KtExpression> SAM_CONSTRUCTOR_TO_ARGUMENT = Slices.createSimpleSlice();
+    public static final WritableSlice<KtCallElement, KtExpression> SAM_CONSTRUCTOR_TO_ARGUMENT =
+            new BasicWritableSlice<KtCallElement, KtExpression>(Slices.ONLY_REWRITE_TO_EQUAL);
 
-    public static final WritableSlice<KtWhenExpression, WhenByEnumsMapping> MAPPING_FOR_WHEN_BY_ENUM = Slices.createSimpleSlice();
+    public static final WritableSlice<KtWhenExpression, WhenByEnumsMapping> MAPPING_FOR_WHEN_BY_ENUM =
+            new BasicWritableSlice<KtWhenExpression, WhenByEnumsMapping>(Slices.ONLY_REWRITE_TO_EQUAL);
 
     public static final WritableSlice<String, List<WhenByEnumsMapping>> MAPPINGS_FOR_WHENS_BY_ENUM_IN_CLASS_FILE =
-            Slices.createSimpleSlice();
+            new BasicWritableSlice<String, List<WhenByEnumsMapping>>(Slices.ONLY_REWRITE_TO_EQUAL);
 
     static {
         BasicWritableSlice.initSliceDebugNames(CodegenBinding.class);

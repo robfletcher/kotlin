@@ -54,20 +54,20 @@ public class Slices {
         return new SliceBuilder<K, V>(ONLY_REWRITE_TO_EQUAL);
     }
 
-    public static <K, V> WritableSlice<K, V> createSimpleSlice() {
-        return new BasicWritableSlice<K, V>(ONLY_REWRITE_TO_EQUAL);
-    }
-
     public static <K, V> WritableSlice<K, V> createCollectiveSlice() {
         return new BasicWritableSlice<K, V>(ONLY_REWRITE_TO_EQUAL, true);
     }
 
     public static <K> WritableSlice<K, Boolean> createSimpleSetSlice() {
-        return new SetSlice<K>(RewritePolicy.DO_NOTHING);
+        return new SetSlice<K>(false, RewritePolicy.DO_NOTHING);
+    }
+
+    public static <K> WritableSlice<K, Boolean> createSimpleSetWithDefaultSlice(boolean defaultValue) {
+        return new SetSlice<K>(defaultValue, RewritePolicy.DO_NOTHING);
     }
 
     public static <K> WritableSlice<K, Boolean> createCollectiveSetSlice() {
-        return new SetSlice<K>(RewritePolicy.DO_NOTHING, true);
+        return new SetSlice<K>(false, RewritePolicy.DO_NOTHING, true);
     }
 
     public static class SliceBuilder<K, V> {
@@ -118,22 +118,4 @@ public class Slices {
             return new BasicWritableSlice<K, V>(rewritePolicy);
         }
     }
-
-    public static class SetSlice<K> extends BasicWritableSlice<K, Boolean> {
-
-        protected SetSlice(RewritePolicy rewritePolicy) {
-            this(rewritePolicy, false);
-        }
-
-        protected SetSlice(RewritePolicy rewritePolicy, boolean collective) {
-            super(rewritePolicy, collective);
-        }
-
-        @Override
-        public Boolean computeValue(SlicedMap map, K key, Boolean value, boolean valueNotFound) {
-            Boolean result = super.computeValue(map, key, value, valueNotFound);
-            return result != null ? result : false;
-        }
-    }
-
 }
