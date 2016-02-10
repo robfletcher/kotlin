@@ -214,7 +214,9 @@ public class LazyClassDescriptor extends ClassDescriptorBase implements ClassDes
                 return computeCompanionObjectDescriptor(getCompanionObjectIfAllowed());
             }
         });
-        this.extraCompanionObjectDescriptors = storageManager.createMemoizedFunction(new Function1<KtObjectDeclaration, ClassDescriptor>() {
+
+        // TODO: How this thing works?
+        this.extraCompanionObjectDescriptors = storageManager.createMemoizedFunction(null, new Function1<KtObjectDeclaration, ClassDescriptor>() {
             @Override
             public ClassDescriptor invoke(KtObjectDeclaration companionObject) {
                 return computeCompanionObjectDescriptor(companionObject);

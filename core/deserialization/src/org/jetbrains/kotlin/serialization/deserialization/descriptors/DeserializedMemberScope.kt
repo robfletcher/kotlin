@@ -48,9 +48,9 @@ abstract class DeserializedMemberScope protected constructor(
             }
 
     private val functions =
-            c.storageManager.createMemoizedFunction<Name, Collection<FunctionDescriptor>> { computeFunctions(it) }
+            c.storageManager.createMemoizedFunction<Name, Collection<FunctionDescriptor>>(emptyList()) { computeFunctions(it) }
     private val properties =
-            c.storageManager.createMemoizedFunction<Name, Collection<PropertyDescriptor>> { computeProperties(it) }
+            c.storageManager.createMemoizedFunction<Name, Collection<PropertyDescriptor>>(emptyList()) { computeProperties(it) }
 
     private fun <M : MessageLite> groupByKey(
             protos: Collection<M>, getNameIndex: (M) -> Int, isExtension: (M) -> Boolean

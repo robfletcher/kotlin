@@ -120,7 +120,7 @@ public class StorageManagerTest extends TestCase {
 
     public void testFunctionComputesOnce() throws Exception {
         CounterFunction counter = new CounterFunction();
-        MemoizedFunctionToNotNull<String, String> f = m.createMemoizedFunction(counter);
+        MemoizedFunctionToNotNull<String, String> f = m.createMemoizedFunction(null, counter);
         doTestComputesOnce(apply(f, "ok"), "ok1", counter);
     }
 
@@ -138,7 +138,7 @@ public class StorageManagerTest extends TestCase {
 
     public void testFunctionPreservesExceptions() throws Exception {
         ExceptionCounterFunction counter = new ExceptionCounterFunction();
-        MemoizedFunctionToNotNull<String, String> f = m.createMemoizedFunction(counter);
+        MemoizedFunctionToNotNull<String, String> f = m.createMemoizedFunction(null, counter);
         doTestExceptionPreserved(apply(f, ""), UnsupportedOperationException.class, counter);
     }
 
@@ -150,7 +150,7 @@ public class StorageManagerTest extends TestCase {
 
     public void testRecursionDetection() throws Exception {
         class C {
-            MemoizedFunctionToNotNull<String, String> rec = m.createMemoizedFunction(
+            MemoizedFunctionToNotNull<String, String> rec = m.createMemoizedFunction(null,
                     new Function1<String, String>() {
                         @Override
                         public String invoke(String s) {
@@ -483,7 +483,7 @@ public class StorageManagerTest extends TestCase {
             }
         });
         try {
-            m.createMemoizedFunction(
+            m.createMemoizedFunction(null,
                     new Function1<Object, Object>() {
                         @Nullable
                         @Override

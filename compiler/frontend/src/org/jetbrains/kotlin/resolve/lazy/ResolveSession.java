@@ -171,14 +171,14 @@ public class ResolveSession implements KotlinCodeAnalyzer, LazyClassContext {
             }
         };
 
-        fileAnnotations = storageManager.createMemoizedFunction(new Function1<KtFile, LazyAnnotations>() {
+        fileAnnotations = storageManager.createMemoizedFunction(null, new Function1<KtFile, LazyAnnotations>() {
             @Override
             public LazyAnnotations invoke(KtFile file) {
                 return createAnnotations(file, file.getAnnotationEntries());
             }
         });
 
-        danglingAnnotations = storageManager.createMemoizedFunction(new Function1<KtFile, LazyAnnotations>() {
+        danglingAnnotations = storageManager.createMemoizedFunction(null, new Function1<KtFile, LazyAnnotations>() {
             @Override
             public LazyAnnotations invoke(KtFile file) {
                 return createAnnotations(file, file.getDanglingAnnotations());
@@ -186,6 +186,7 @@ public class ResolveSession implements KotlinCodeAnalyzer, LazyClassContext {
         });
     }
 
+    @NotNull
     private LazyAnnotations createAnnotations(KtFile file, List<KtAnnotationEntry> annotationEntries) {
         LexicalScope scope = fileScopeProvider.getFileResolutionScope(file);
         LazyAnnotationsContextImpl lazyAnnotationContext =

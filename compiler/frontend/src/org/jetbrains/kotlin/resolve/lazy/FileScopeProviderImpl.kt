@@ -54,7 +54,7 @@ open class FileScopeProviderImpl(
 
     private class FileData(val scope: LexicalScope, val importResolver: ImportResolver)
 
-    private val cache = storageManager.createMemoizedFunction { file: KtFile -> createScopeChainAndImportResolver(file) }
+    private val cache = storageManager.createMemoizedFunction(null) { file: KtFile -> createScopeChainAndImportResolver(file) }
 
     override fun getFileResolutionScope(file: KtFile) = cache(file).scope
 

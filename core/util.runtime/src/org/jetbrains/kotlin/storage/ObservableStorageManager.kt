@@ -22,16 +22,16 @@ abstract class ObservableStorageManager(private val delegate: StorageManager) : 
     protected abstract val <T> (() -> T).observable: () -> T
     protected abstract val <K, V> ((K) -> V).observable: (K) -> V
 
-    override fun <K, V: Any> createMemoizedFunction(compute: (K) -> V): MemoizedFunctionToNotNull<K, V> {
-        return delegate.createMemoizedFunction(compute.observable)
+    override fun <K, V: Any> createMemoizedFunction(defaultValue: V?, compute: (K) -> V): MemoizedFunctionToNotNull<K, V> {
+        return delegate.createMemoizedFunction(defaultValue, compute.observable)
     }
 
     override fun <K, V: Any> createMemoizedFunctionWithNullableValues(compute: (K) -> V?): MemoizedFunctionToNullable<K, V> {
         return delegate.createMemoizedFunctionWithNullableValues(compute.observable)
     }
 
-    override fun <K, V: Any> createMemoizedFunction(compute: (K) -> V, map: ConcurrentMap<K, Any>): MemoizedFunctionToNotNull<K, V> {
-        return delegate.createMemoizedFunction(compute.observable, map)
+    override fun <K, V: Any> createMemoizedFunction(compute: (K) -> V, map: ConcurrentMap<K, Any>, defaultValue: V?): MemoizedFunctionToNotNull<K, V> {
+        return delegate.createMemoizedFunction(compute.observable, map, defaultValue)
     }
 
     override fun <K, V: Any> createMemoizedFunctionWithNullableValues(compute: (K) -> V, map: ConcurrentMap<K, Any>): MemoizedFunctionToNullable<K, V> {

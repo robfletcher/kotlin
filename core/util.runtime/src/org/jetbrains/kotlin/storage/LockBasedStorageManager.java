@@ -25,7 +25,9 @@ import org.jetbrains.kotlin.utils.ExceptionUtilsKt;
 import org.jetbrains.kotlin.utils.WrappedValues;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.Lock;
@@ -101,17 +103,18 @@ public class LockBasedStorageManager implements StorageManager {
 
     @NotNull
     @Override
-    public <K, V> MemoizedFunctionToNotNull<K, V> createMemoizedFunction(@NotNull Function1<? super K, ? extends V> compute) {
-        return createMemoizedFunction(compute, LockBasedStorageManager.<K>createConcurrentHashMap());
+    public <K, V> MemoizedFunctionToNotNull<K, V> createMemoizedFunction(@Nullable V defaultValue, @NotNull Function1<? super K, ? extends V> compute) {
+        return createMemoizedFunction(compute, LockBasedStorageManager.<K>createConcurrentHashMap(), defaultValue);
     }
 
     @NotNull
     @Override
     public <K, V> MemoizedFunctionToNotNull<K, V> createMemoizedFunction(
             @NotNull Function1<? super K, ? extends V> compute,
-            @NotNull ConcurrentMap<K, Object> map
+            @NotNull ConcurrentMap<K, Object> map,
+            @Nullable V defaultValue
     ) {
-        return new MapBasedMemoizedFunctionToNotNull<K, V>(map, compute);
+        return new MapBasedMemoizedFunctionToNotNull<K, V>(map, compute, defaultValue);
     }
 
     @NotNull
@@ -126,7 +129,7 @@ public class LockBasedStorageManager implements StorageManager {
             @NotNull Function1<? super K, ? extends V> compute,
             @NotNull ConcurrentMap<K, Object> map
     ) {
-        return new MapBasedMemoizedFunction<K, V>(map, compute);
+        return new MapBasedMemoizedFunction<K, V>(map, compute, null);
     }
 
     @NotNull
@@ -368,20 +371,28 @@ public class LockBasedStorageManager implements StorageManager {
     private class MapBasedMemoizedFunction<K, V> implements MemoizedFunctionToNullable<K, V> {
         private final ConcurrentMap<K, Object> cache;
         private final Function1<? super K, ? extends V> compute;
+        private final Set<K> defaultValues;
+        private final V defaultValue;
 
-        public MapBasedMemoizedFunction(@NotNull ConcurrentMap<K, Object> map, @NotNull Function1<? super K, ? extends V> compute) {
+        public MapBasedMemoizedFunction(@NotNull ConcurrentMap<K, Object> map, @NotNull Function1<? super K, ? extends V> compute, V defaultValue) {
             this.cache = map;
             this.compute = compute;
+            this.defaultValue = defaultValue;
+            this.defaultValues = Collections.newSetFromMap(new ConcurrentHashMap<K, Boolean>());
         }
 
         @Override
         @Nullable
         public V invoke(K input) {
+            if (defaultValues.contains(input)) return defaultValue;
+
             Object value = cache.get(input);
             if (value != null && value != NotValue.COMPUTING) return WrappedValues.unescapeExceptionOrNull(value);
 
             lock.lock();
             try {
+                if (defaultValues.contains(input)) return defaultValue;
+
                 value = cache.get(input);
                 if (value == NotValue.COMPUTING) {
                     throw recursionDetected(input);
@@ -401,6 +412,11 @@ public class LockBasedStorageManager implements StorageManager {
                     if (oldValue != NotValue.COMPUTING) {
                         error = raceCondition(input, oldValue);
                         throw error;
+                    }
+
+                    if (typedValue == defaultValue) {
+                        defaultValues.add(input);
+                        cache.remove(input, typedValue);
                     }
 
                     return typedValue;
@@ -444,12 +460,12 @@ public class LockBasedStorageManager implements StorageManager {
     }
 
     private class MapBasedMemoizedFunctionToNotNull<K, V> extends MapBasedMemoizedFunction<K, V> implements MemoizedFunctionToNotNull<K, V> {
-
         public MapBasedMemoizedFunctionToNotNull(
                 @NotNull ConcurrentMap<K, Object> map,
-                @NotNull Function1<? super K, ? extends V> compute
+                @NotNull Function1<? super K, ? extends V> compute,
+                @Nullable V defaultValue
         ) {
-            super(map, compute);
+            super(map, compute, defaultValue);
         }
 
         @NotNull

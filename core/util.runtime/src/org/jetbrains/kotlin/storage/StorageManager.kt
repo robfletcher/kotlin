@@ -21,17 +21,17 @@ import java.util.concurrent.ConcurrentMap
 interface StorageManager {
     /**
      * Given a function compute: K -> V create a memoized version of it that computes a value only once for each key
+     * @param default default value
      * @param compute the function to be memoized
-     * @param valuesReferenceKind how to store the memoized values
      *
      * NOTE: if compute() has side-effects the WEAK reference kind is dangerous: the side-effects will be repeated if
      *       the value gets collected and then re-computed
      */
-    fun <K, V : Any> createMemoizedFunction(compute: (K) -> V): MemoizedFunctionToNotNull<K, V>
+    fun <K, V : Any> createMemoizedFunction(defaultValue: V?, compute: (K) -> V): MemoizedFunctionToNotNull<K, V>
 
     fun <K, V : Any> createMemoizedFunctionWithNullableValues(compute: (K) -> V?): MemoizedFunctionToNullable<K, V>
 
-    fun <K, V : Any> createMemoizedFunction(compute: (K) -> V, map: ConcurrentMap<K, Any>): MemoizedFunctionToNotNull<K, V>
+    fun <K, V : Any> createMemoizedFunction(compute: (K) -> V, map: ConcurrentMap<K, Any>, defaultValue: V?): MemoizedFunctionToNotNull<K, V>
 
     fun <K, V : Any> createMemoizedFunctionWithNullableValues(compute: (K) -> V, map: ConcurrentMap<K, Any>): MemoizedFunctionToNullable<K, V>
 

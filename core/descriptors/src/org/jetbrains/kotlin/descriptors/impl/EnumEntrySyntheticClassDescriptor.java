@@ -183,14 +183,14 @@ public class EnumEntrySyntheticClassDescriptor extends ClassDescriptorBase {
         private final NotNullLazyValue<Collection<DeclarationDescriptor>> allDescriptors;
 
         public EnumEntryScope(@NotNull StorageManager storageManager) {
-            this.functions = storageManager.createMemoizedFunction(new Function1<Name, Collection<FunctionDescriptor>>() {
+            this.functions = storageManager.createMemoizedFunction(Collections.<FunctionDescriptor>emptyList(), new Function1<Name, Collection<FunctionDescriptor>>() {
                 @Override
                 public Collection<FunctionDescriptor> invoke(Name name) {
                     return computeFunctions(name);
                 }
             });
 
-            this.properties = storageManager.createMemoizedFunction(new Function1<Name, Collection<PropertyDescriptor>>() {
+            this.properties = storageManager.createMemoizedFunction(Collections.<PropertyDescriptor>emptyList(), new Function1<Name, Collection<PropertyDescriptor>>() {
                 @Override
                 public Collection<PropertyDescriptor> invoke(Name name) {
                     return computeProperties(name);

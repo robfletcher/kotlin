@@ -76,7 +76,7 @@ interface SyntheticJavaPropertyDescriptor : PropertyDescriptor {
 }
 
 class JavaSyntheticPropertiesScope(storageManager: StorageManager, private val lookupTracker: LookupTracker) : SyntheticScope {
-    private val syntheticPropertyInClass = storageManager.createMemoizedFunction<Pair<ClassDescriptor, Name>, SyntheticPropertyHolder> { pair ->
+    private val syntheticPropertyInClass = storageManager.createMemoizedFunction<Pair<ClassDescriptor, Name>, SyntheticPropertyHolder>(null) { pair ->
         syntheticPropertyInClassNotCached(pair.first, pair.second)
     }
 

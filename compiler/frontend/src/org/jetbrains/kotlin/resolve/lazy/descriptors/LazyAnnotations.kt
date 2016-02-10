@@ -57,7 +57,7 @@ class LazyAnnotations(
 ) : Annotations, LazyEntity {
     override fun isEmpty() = annotationEntries.isEmpty()
 
-    private val annotation = c.storageManager.createMemoizedFunction {
+    private val annotation = c.storageManager.createMemoizedFunction(null) {
         entry: KtAnnotationEntry ->
 
         val descriptor = LazyAnnotationDescriptor(c, entry)
