@@ -457,6 +457,11 @@ public class LockBasedStorageManager implements StorageManager {
             Object value = cache.get(key);
             return value != null && value != NotValue.COMPUTING;
         }
+
+        @Override
+        public void dropDefault() {
+            defaultValues.clear();
+        }
     }
 
     private class MapBasedMemoizedFunctionToNotNull<K, V> extends MapBasedMemoizedFunction<K, V> implements MemoizedFunctionToNotNull<K, V> {

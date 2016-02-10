@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentMap
 interface StorageManager {
     /**
      * Given a function compute: K -> V create a memoized version of it that computes a value only once for each key
-     * @param default default value
+     * @param defaultValue default value
      * @param compute the function to be memoized
      *
      * NOTE: if compute() has side-effects the WEAK reference kind is dangerous: the side-effects will be repeated if

@@ -63,10 +63,10 @@ open class DeserializedPackageMemberScope(
     }
 
     override fun addNonDeclaredDescriptors(result: MutableCollection<DeclarationDescriptor>, location: LookupLocation) {
-        // Do nothing
+        functions.dropDefault()
     }
 
     override fun addEnumEntryDescriptors(result: MutableCollection<DeclarationDescriptor>, nameFilter: (Name) -> Boolean) {
-        // Do nothing
+        properties.dropDefault()
     }
 }

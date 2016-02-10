@@ -20,10 +20,12 @@ import kotlin.reflect.KProperty
 
 interface MemoizedFunctionToNotNull<P, R : Any> : Function1<P, R> {
     fun isComputed(key: P): Boolean
+    fun dropDefault()
 }
 
 interface MemoizedFunctionToNullable<P, R : Any> : Function1<P, R?> {
     fun isComputed(key: P): Boolean
+    fun dropDefault()
 }
 
 interface NotNullLazyValue<T : Any> : Function0<T> {
