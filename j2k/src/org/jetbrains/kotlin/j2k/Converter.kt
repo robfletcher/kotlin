@@ -665,10 +665,10 @@ class Converter private constructor(
                 modifiers = modifiers.with(Modifier.OPEN)
             }
 
-            modifiers = modifiers.adaptForContainingClassVisibility(owner.containingClass)
+            modifiers = modifiers.adaptForContainingClassVisibility(owner.containingClass).adaptProtectedVisibility(owner)
         }
         else if (owner is PsiField) {
-            modifiers = modifiers.adaptForContainingClassVisibility(owner.containingClass)
+            modifiers = modifiers.adaptForContainingClassVisibility(owner.containingClass).adaptProtectedVisibility(owner)
         }
         else if (owner is PsiClass && owner.scope is PsiMethod) {
             // Local class should not have visibility modifiers
@@ -683,6 +683,36 @@ class Converter private constructor(
         if (containingClass == null || !containingClass.hasModifierProperty(PsiModifier.PACKAGE_LOCAL)) return this
         if (!contains(Modifier.INTERNAL) || contains(Modifier.OVERRIDE) || contains(Modifier.OPEN) || contains(Modifier.ABSTRACT)) return this
         return without(Modifier.INTERNAL).with(Modifier.PUBLIC)
+    }
+
+    private fun Modifiers.adaptProtectedVisibility(member: PsiMember): Modifiers {
+        if (!member.hasModifierProperty(PsiModifier.PROTECTED)) return this
+        val originalClass = member.containingClass ?: return this
+        val usages = referenceSearcher.findUsagesForExternalCodeProcessing(member, true, true)
+        for (usage in usages) {
+            val element = usage.element
+
+            var disallowProtected = false
+            var containingClass = element?.getContainingClass()
+            while (containingClass != null) {
+                if (disallowProtected(containingClass, originalClass)) {
+                    disallowProtected = true
+                }
+                else {
+                    disallowProtected = false
+                }
+                containingClass = (containingClass as PsiElement).getContainingClass()
+            }
+
+            if (disallowProtected) {
+                return without(Modifier.PROTECTED).with(Modifier.INTERNAL)
+            }
+        }
+        return this
+    }
+
+    private fun disallowProtected(containingClass: PsiClass, originalClass: PsiClass): Boolean {
+        return originalClass != containingClass && !containingClass.isInheritor(originalClass, true)
     }
 
     fun convertAnonymousClassBody(anonymousClass: PsiAnonymousClass): AnonymousClassBody {
