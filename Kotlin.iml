@@ -43,6 +43,7 @@
       <excludeFolder url="file://$MODULE_DIR$/libraries/tools/kotlin-reflect/target" />
       <excludeFolder url="file://$MODULE_DIR$/libraries/tools/kotlin-stdlib-gen/target" />
       <excludeFolder url="file://$MODULE_DIR$/libraries/tools/runtime/target" />
+      <excludeFolder url="file://$MODULE_DIR$/ultimateLib" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
