@@ -711,6 +711,35 @@ class Converter private constructor(
         return this
     }
 
+    private fun Modifiers.adaptPrivateVisibility(member: PsiField): Modifiers {
+        if (!member.hasModifierProperty(PsiModifier.PRIVATE)) return this
+
+
+
+        val originalClass = member.containingClass ?: return this
+        val usages = referenceSearcher.findUsagesForExternalCodeProcessing(member, true, true)
+        for (usage in usages) {
+            val element = usage.element
+
+            var disallowProtected = false
+            var containingClass = element?.getContainingClass()
+            while (containingClass != null) {
+                if (disallowProtected(containingClass, originalClass)) {
+                    disallowProtected = true
+                }
+                else {
+                    disallowProtected = false
+                }
+                containingClass = (containingClass as PsiElement).getContainingClass()
+            }
+
+            if (disallowProtected) {
+                return without(Modifier.PROTECTED).with(Modifier.INTERNAL)
+            }
+        }
+        return this
+    }
+
     private fun disallowProtected(containingClass: PsiClass, originalClass: PsiClass): Boolean {
         return originalClass != containingClass && !containingClass.isInheritor(originalClass, true)
     }

@@ -144,8 +144,8 @@ private class PropertyDetector(
 
             val isVar = if (setterInfo != null)
                 true
-            else if (getterInfo!!.superProperty != null && getterInfo.superProperty!!.isVar)
-                true
+            else if (getterInfo!!.superProperty != null)
+                 getterInfo.superProperty!!.isVar
             else
                 field != null && field.isVar(converter.referenceSearcher)
 
