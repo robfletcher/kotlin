@@ -10,5 +10,14 @@
                      groupPath="Kotlin,Spring"
                      enabledByDefault="true"
                      level="WARNING"/>
+      <localInspection language="kotlin"
+                       shortName="KotlinSpringFacetCodeInspection"
+                       bundle="resources.messages.SpringBundle"
+                       key="spring.facet.code.inspection"
+                       groupName="Spring Core"
+                       groupPath="Kotlin,Spring"
+                       enabledByDefault="true"
+                       level="WARNING"
+                       implementationClass="org.jetbrains.kotlin.idea.spring.inspections.KotlinSpringFacetCodeInspection"/>
   </extensions>
 </idea-plugin>
