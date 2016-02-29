@@ -17,9 +17,8 @@
 package org.jetbrains.kotlin.asJava
 
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.PsiAnnotation
-import com.intellij.psi.PsiAnnotationOwner
-import com.intellij.psi.PsiElement
+import com.intellij.psi.*
+import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistry
 import org.jetbrains.kotlin.psi.KtAnnotationEntry
 
 class KtLightAnnotation(
@@ -27,6 +26,11 @@ class KtLightAnnotation(
         private val originalElement: KtAnnotationEntry?,
         private val owner: PsiAnnotationOwner
 ) : PsiAnnotation by delegate, KtLightElement<KtAnnotationEntry, PsiAnnotation> {
+    private class AnnotationMemberValueWrapper(private val delegate: PsiAnnotationMemberValue) : PsiAnnotationMemberValue by delegate {
+        override fun getReference() = references.singleOrNull()
+        override fun getReferences() = ReferenceProvidersRegistry.getReferencesFromProviders(delegate, PsiReferenceService.Hints.NO_HINTS)
+    }
+
     override fun getDelegate() = delegate
     override fun getOrigin() = originalElement
 
@@ -34,6 +38,14 @@ class KtLightAnnotation(
     override fun setName(newName: String) = throw UnsupportedOperationException()
 
     override fun getOwner() = owner
+
+    override fun findAttributeValue(name: String?): PsiAnnotationMemberValue? {
+        return AnnotationMemberValueWrapper(delegate.findAttributeValue(name) ?: return null)
+    }
+
+    override fun findDeclaredAttributeValue(name: String?): PsiAnnotationMemberValue? {
+        return AnnotationMemberValueWrapper(delegate.findDeclaredAttributeValue(name) ?: return null)
+    }
 
     override fun getText() = originalElement?.text ?: ""
     override fun getTextRange() = originalElement?.textRange ?: TextRange.EMPTY_RANGE
