@@ -413,10 +413,12 @@ class DefaultExpressionConverter : JavaElementVisitor(), ExpressionConverter {
             }
         }
 
-        result = MethodCallExpression(codeConverter.convertExpression(methodExpr),
+        val methodExpression = codeConverter.convertExpression(methodExpr)
+        result = MethodCallExpression(methodExpression,
                                       convertArguments(expression),
                                       typeArguments,
-                                      isNullable)
+                                      isNullable).assignPrototypesFrom(methodExpression)
+        methodExpression.assignNoPrototype()
     }
 
     private fun KtLightMethod.isKotlinExtensionFunction(): Boolean {
