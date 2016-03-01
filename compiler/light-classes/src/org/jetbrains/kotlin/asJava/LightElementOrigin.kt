@@ -17,7 +17,9 @@
 package org.jetbrains.kotlin.asJava
 
 import com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtDeclaration
+import org.jetbrains.kotlin.psi.KtElement
 import org.jetbrains.kotlin.resolve.jvm.diagnostics.JvmDeclarationOrigin
 import org.jetbrains.kotlin.resolve.jvm.diagnostics.JvmDeclarationOriginKind
 
@@ -39,12 +41,12 @@ interface LightElementOrigin {
 fun JvmDeclarationOrigin.toLightMemberOrigin(): LightElementOrigin {
     val originalElement = element
     return when (originalElement) {
-        is KtDeclaration -> LightMemberOrigin(originalElement, originKind)
+        is KtDeclaration, is KtAnnotationEntry -> LightMemberOrigin(originalElement as KtElement, originKind)
         else -> LightElementOrigin.None
     }
 }
 
-data class LightMemberOrigin(override val originalElement: KtDeclaration, override val originKind: JvmDeclarationOriginKind) : LightElementOrigin
+data class LightMemberOrigin(override val originalElement: KtElement, override val originKind: JvmDeclarationOriginKind) : LightElementOrigin
 
 data class LightClassOrigin(override val originalElement: PsiElement?) : LightElementOrigin {
     override val originKind: JvmDeclarationOriginKind? get() = null
@@ -54,4 +56,4 @@ fun PsiElement?.toLightClassOrigin(): LightElementOrigin {
     return if (this != null) LightClassOrigin(this) else LightElementOrigin.None
 }
 
-fun LightMemberOrigin.copy() = LightMemberOrigin(originalElement.copy() as KtDeclaration, originKind)
+fun LightMemberOrigin.copy() = LightMemberOrigin(originalElement.copy() as KtElement, originKind)

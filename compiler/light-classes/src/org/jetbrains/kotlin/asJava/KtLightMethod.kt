@@ -108,6 +108,10 @@ sealed class KtLightMethodImpl(
         throw IncorrectOperationException(JavaCoreBundle.message("psi.error.attempt.to.edit.class.file"))
     }
 
+    private val _modifierList by lazy { KtLightModifierList(delegate.modifierList, this) }
+
+    override fun getModifierList() = _modifierList
+
     override fun getParameterList() = paramsList.value
 
     override fun getTypeParameterList() = typeParamsList.value

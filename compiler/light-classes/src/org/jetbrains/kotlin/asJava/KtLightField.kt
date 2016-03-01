@@ -65,7 +65,9 @@ sealed class KtLightFieldImpl(
     @Throws(IncorrectOperationException::class)
     override fun setName(@NonNls name: String) = throw IncorrectOperationException("Not supported")
 
-    override fun getModifierList() = delegate.modifierList
+    private val _modifierList by lazy { delegate.modifierList?.let { KtLightModifierList(it, this) } }
+
+    override fun getModifierList() = _modifierList
 
     override fun hasModifierProperty(@NonNls name: String) = delegate.hasModifierProperty(name)
 
