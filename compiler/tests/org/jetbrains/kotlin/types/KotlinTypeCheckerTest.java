@@ -193,7 +193,8 @@ public class KotlinTypeCheckerTest extends KotlinLiteFixture {
     }
 
     public void testIntersect() throws Exception {
-        assertIntersection("Enum<*>", "Enum<*>?", "Enum<out Enum<*>?>");
+        assertIntersection("Array<Any?>", "Array<Any?>", "Array<in Any?>");
+        assertIntersection("Enum<*>", "Enum<*>", "Enum<out Any>");
 
         assertIntersection("Long", "Long?", "Number");
         assertIntersection("Long", "Number", "Long?");
