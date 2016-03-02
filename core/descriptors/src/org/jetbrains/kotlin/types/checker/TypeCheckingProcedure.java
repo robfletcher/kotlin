@@ -107,21 +107,18 @@ public class TypeCheckingProcedure {
             TypeParameterDescriptor typeParameter1 = constructor1.getParameters().get(i);
             TypeParameterDescriptor typeParameter2 = constructor2.getParameters().get(i);
 
-            if (capture(typeProjection1, typeProjection2, typeParameter1)) {
+            if (capture(typeProjection1, typeProjection2, typeParameter1) &&
+                capture(typeProjection2, typeProjection1, typeParameter2)) {
                 continue;
             }
             EnrichedProjectionKind kind1 = getEffectiveProjectionKind(typeParameter1, typeProjection1);
             EnrichedProjectionKind kind2 = getEffectiveProjectionKind(typeParameter2, typeProjection2);
             if (kind1 != kind2) {
-                // Any? vs in Any? case
-                if (kind1 == EnrichedProjectionKind.OUT ||
-                    kind2 == EnrichedProjectionKind.OUT ||
-                    !KotlinBuiltIns.isNullableAny(typeProjection1.getType()) ||
-                    !KotlinBuiltIns.isNullableAny(typeProjection2.getType())) {
-                    return false;
-                }
+                return false;
             }
-
+            if (kind1 == EnrichedProjectionKind.STAR) {
+                continue;
+            }
             if (!constraints.assertEqualTypes(typeProjection1.getType(), typeProjection2.getType(), this)) {
                 return false;
             }
@@ -188,7 +185,28 @@ public class TypeCheckingProcedure {
         }
 
         // If they are not opposite, return b, because b is either equal to a or b is in/out and a is inv
-        return EnrichedProjectionKind.fromVariance(b);
+        EnrichedProjectionKind result = EnrichedProjectionKind.fromVariance(b);
+        KotlinType argumentType = typeArgument.getType();
+        switch (result) {
+            case IN:
+                if (KotlinBuiltIns.isNullableAny(argumentType)) {
+                    return EnrichedProjectionKind.INV;
+                }
+                break;
+            case OUT:
+                if (KotlinBuiltIns.isNothing(argumentType)) {
+                    return EnrichedProjectionKind.INV;
+                }
+                for (KotlinType bound : typeParameter.getUpperBounds()) {
+                    if (!KotlinTypeChecker.DEFAULT.isSubtypeOf(argumentType, bound)) {
+                        return EnrichedProjectionKind.STAR;
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+        return result;
     }
 
     public boolean isSubtypeOf(@NotNull KotlinType subtype, @NotNull KotlinType supertype) {
