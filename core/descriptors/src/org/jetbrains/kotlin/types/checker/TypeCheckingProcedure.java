@@ -110,8 +110,16 @@ public class TypeCheckingProcedure {
             if (capture(typeProjection1, typeProjection2, typeParameter1)) {
                 continue;
             }
-            if (getEffectiveProjectionKind(typeParameter1, typeProjection1) != getEffectiveProjectionKind(typeParameter2, typeProjection2)) {
-                return false;
+            EnrichedProjectionKind kind1 = getEffectiveProjectionKind(typeParameter1, typeProjection1);
+            EnrichedProjectionKind kind2 = getEffectiveProjectionKind(typeParameter2, typeProjection2);
+            if (kind1 != kind2) {
+                // Any? vs in Any? case
+                if (kind1 == EnrichedProjectionKind.OUT ||
+                    kind2 == EnrichedProjectionKind.OUT ||
+                    !KotlinBuiltIns.isNullableAny(typeProjection1.getType()) ||
+                    !KotlinBuiltIns.isNullableAny(typeProjection2.getType())) {
+                    return false;
+                }
             }
 
             if (!constraints.assertEqualTypes(typeProjection1.getType(), typeProjection2.getType(), this)) {

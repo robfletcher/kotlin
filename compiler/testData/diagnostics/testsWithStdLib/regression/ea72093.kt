@@ -1,2 +1,3 @@
 // EA-72093: Empty intersection of types...
-fun foo(first: Array<Any?>, second: Array<Any?>) = Pair(first.toCollection(), second.toCollection())
+fun foo(first: Array<Any?>, second: Array<Any?>) =
+        Pair(first.toCollection(<!NO_VALUE_FOR_PARAMETER!>)<!>, second.toCollection(<!NO_VALUE_FOR_PARAMETER!>)<!>)
