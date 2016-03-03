@@ -16,10 +16,18 @@
 
 package org.jetbrains.kotlin.descriptors
 
+import org.jetbrains.kotlin.psi.KtProperty
 import org.jetbrains.kotlin.psi.KtPropertyAccessor
 import org.jetbrains.kotlin.resolve.DescriptorToSourceUtils
 
 fun PropertyAccessorDescriptor.hasBody(): Boolean {
     val ktAccessor = DescriptorToSourceUtils.getSourceFromDescriptor(this) as? KtPropertyAccessor
     return ktAccessor != null && ktAccessor.hasBody()
+}
+
+fun PropertyAccessorDescriptor.isDefault(): Boolean {
+    val ktProperty = DescriptorToSourceUtils.getSourceFromDescriptor(correspondingProperty)
+    if (ktProperty is KtProperty && ktProperty.hasDelegate()) return false
+
+    return source == SourceElement.NO_SOURCE || source == correspondingProperty.source
 }

@@ -29,8 +29,8 @@ import org.jetbrains.kotlin.js.translate.context.TranslationContext;
 import org.jetbrains.kotlin.name.Name;
 import org.jetbrains.kotlin.psi.KtExpression;
 import org.jetbrains.kotlin.resolve.DescriptorUtils;
-import org.jetbrains.kotlin.resolve.scopes.receivers.ReceiverValue;
 import org.jetbrains.kotlin.resolve.scopes.receivers.ImplicitReceiver;
+import org.jetbrains.kotlin.resolve.scopes.receivers.ReceiverValue;
 import org.jetbrains.kotlin.types.KotlinType;
 import org.jetbrains.kotlin.util.OperatorNameConventions;
 
@@ -144,7 +144,7 @@ public final class JsDescriptorUtils {
     }
 
     private static boolean isDefaultAccessor(@Nullable PropertyAccessorDescriptor accessorDescriptor) {
-        return accessorDescriptor == null || accessorDescriptor.isDefault();
+        return accessorDescriptor == null || DescriptorPsiUtilsKt.isDefault(accessorDescriptor);
     }
 
     public static boolean isSimpleFinalProperty(@NotNull PropertyDescriptor propertyDescriptor) {

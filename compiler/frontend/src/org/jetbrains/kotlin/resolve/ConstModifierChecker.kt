@@ -60,7 +60,7 @@ object ConstModifierChecker : DeclarationChecker {
             return Errors.CONST_VAL_WITH_DELEGATE.on(declaration.delegate!!)
         }
 
-        if (descriptor is PropertyDescriptor && !descriptor.getter!!.isDefault) {
+        if (descriptor is PropertyDescriptor && !descriptor.getter!!.isDefault()) {
             return Errors.CONST_VAL_WITH_GETTER.on(declaration.getter!!)
         }
 

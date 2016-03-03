@@ -259,9 +259,8 @@ public class PropertyDescriptorImpl extends VariableDescriptorWithInitializerImp
         substitutedDescriptor.setType(outType, substitutedTypeParameters, substitutedDispatchReceiver, substitutedReceiverType);
 
         PropertyGetterDescriptorImpl newGetter = getter == null ? null : new PropertyGetterDescriptorImpl(
-                substitutedDescriptor, getter.getAnnotations(), newModality, getter.getVisibility(),
-                getter.isDefault(), getter.isExternal(), kind, original == null ? null : original.getGetter(),
-                SourceElement.NO_SOURCE
+                substitutedDescriptor, getter.getAnnotations(), newModality, getter.getVisibility(), getter.isExternal(), kind,
+                original == null ? null : original.getGetter(), SourceElement.NO_SOURCE
         );
         if (newGetter != null) {
             KotlinType returnType = getter.getReturnType();
@@ -269,9 +268,8 @@ public class PropertyDescriptorImpl extends VariableDescriptorWithInitializerImp
             newGetter.initialize(returnType != null ? substitutor.substitute(returnType, Variance.OUT_VARIANCE) : null);
         }
         PropertySetterDescriptorImpl newSetter = setter == null ? null : new PropertySetterDescriptorImpl(
-                substitutedDescriptor, setter.getAnnotations(), newModality, setter.getVisibility(),
-                setter.isDefault(), setter.isExternal(), kind, original == null ? null : original.getSetter(),
-                SourceElement.NO_SOURCE
+                substitutedDescriptor, setter.getAnnotations(), newModality, setter.getVisibility(), setter.isExternal(), kind,
+                original == null ? null : original.getSetter(), SourceElement.NO_SOURCE
         );
         if (newSetter != null) {
             List<ValueParameterDescriptor> substitutedValueParameters = FunctionDescriptorImpl.getSubstitutedValueParameters(

@@ -75,9 +75,7 @@ class MemberDeserializer(private val c: DeserializationContext) {
                         getAnnotations(proto, getterFlags, AnnotatedCallableKind.PROPERTY_GETTER),
                         Deserialization.modality(Flags.MODALITY.get(getterFlags)),
                         Deserialization.visibility(Flags.VISIBILITY.get(getterFlags)),
-                        /* isDefault = */ !isNotDefault,
-                        /* isExternal = */ isExternal,
-                        property.kind, null, SourceElement.NO_SOURCE
+                        isExternal, property.kind, null, SourceElement.NO_SOURCE
                 )
             }
             else {
@@ -100,9 +98,7 @@ class MemberDeserializer(private val c: DeserializationContext) {
                         getAnnotations(proto, setterFlags, AnnotatedCallableKind.PROPERTY_SETTER),
                         Deserialization.modality(Flags.MODALITY.get(setterFlags)),
                         Deserialization.visibility(Flags.VISIBILITY.get(setterFlags)),
-                        /* isDefault = */ !isNotDefault,
-                        /* isExternal = */ isExternal,
-                        property.kind, null, SourceElement.NO_SOURCE
+                        isExternal, property.kind, null, SourceElement.NO_SOURCE
                 )
                 val setterLocal = local.childContext(setter, listOf())
                 val valueParameters = setterLocal.memberDeserializer.valueParameters(

@@ -75,7 +75,7 @@ class JvmFieldApplicabilityChecker : DeclarationChecker {
     }
 
     private fun PropertyDescriptor.hasCustomAccessor()
-            = !(getter?.isDefault ?: true) || !(setter?.isDefault ?: true)
+            = !(getter?.isDefault() ?: true) || !(setter?.isDefault() ?: true)
 
     private fun PropertyDescriptor.hasBackingField(bindingContext: BindingContext)
             = bindingContext.get(BindingContext.BACKING_FIELD_REQUIRED, this) ?: false

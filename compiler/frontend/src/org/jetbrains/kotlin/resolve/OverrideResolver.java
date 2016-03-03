@@ -105,7 +105,8 @@ public class OverrideResolver {
                 if (descriptor.getKind() == FAKE_OVERRIDE || descriptor.getKind() == DELEGATION) {
                     reportOn = DescriptorUtils.getParentOfType(descriptor, ClassDescriptor.class);
                 }
-                else if (descriptor instanceof PropertyAccessorDescriptor && ((PropertyAccessorDescriptor) descriptor).isDefault()) {
+                else if (descriptor instanceof PropertyAccessorDescriptor &&
+                         DescriptorPsiUtilsKt.isDefault((PropertyAccessorDescriptor) descriptor)) {
                     reportOn = ((PropertyAccessorDescriptor) descriptor).getCorrespondingProperty();
                 }
                 else {

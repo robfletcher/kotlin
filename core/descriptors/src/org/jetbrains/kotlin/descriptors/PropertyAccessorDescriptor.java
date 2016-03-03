@@ -21,8 +21,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 
 public interface PropertyAccessorDescriptor extends FunctionDescriptor {
-    boolean isDefault();
-
     @NotNull
     @Override
     PropertyAccessorDescriptor getOriginal();

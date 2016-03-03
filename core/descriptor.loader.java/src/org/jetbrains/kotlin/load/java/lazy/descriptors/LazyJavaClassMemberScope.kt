@@ -428,16 +428,15 @@ class LazyJavaClassMemberScope(
         propertyDescriptor.setType(getterMethod.returnType!!, listOf(), getDispatchReceiverParameter(), null as KotlinType?)
 
         val getter = DescriptorFactory.createGetter(
-                propertyDescriptor, getterMethod.annotations, /* isDefault = */false,
-                /* isExternal = */ false, getterMethod.source
+                propertyDescriptor, getterMethod.annotations, /* isExternal = */ false, getterMethod.source
         ).apply {
             initialSignatureDescriptor = getterMethod
             initialize(propertyDescriptor.type)
         }
 
         val setter = setterMethod?.let { setterMethod ->
-            DescriptorFactory.createSetter(propertyDescriptor, setterMethod.annotations, /* isDefault = */false,
-            /* isExternal = */ false, setterMethod.visibility, setterMethod.source
+            DescriptorFactory.createSetter(
+                    propertyDescriptor, setterMethod.annotations, /* isExternal = */ false, setterMethod.visibility, setterMethod.source
             ).apply {
                 initialSignatureDescriptor = setterMethod
             }

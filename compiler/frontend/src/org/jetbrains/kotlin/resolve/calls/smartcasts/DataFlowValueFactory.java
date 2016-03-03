@@ -35,7 +35,10 @@ import org.jetbrains.kotlin.resolve.calls.context.ResolutionContext;
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall;
 import org.jetbrains.kotlin.resolve.calls.smartcasts.DataFlowValue.Kind;
 import org.jetbrains.kotlin.resolve.descriptorUtil.DescriptorUtilsKt;
-import org.jetbrains.kotlin.resolve.scopes.receivers.*;
+import org.jetbrains.kotlin.resolve.scopes.receivers.ExpressionReceiver;
+import org.jetbrains.kotlin.resolve.scopes.receivers.ImplicitReceiver;
+import org.jetbrains.kotlin.resolve.scopes.receivers.ReceiverValue;
+import org.jetbrains.kotlin.resolve.scopes.receivers.TransientReceiver;
 import org.jetbrains.kotlin.types.KotlinType;
 import org.jetbrains.kotlin.types.TypeUtils;
 import org.jetbrains.kotlin.types.expressions.ExpressionTypingUtils;
@@ -477,6 +480,6 @@ public class DataFlowValueFactory {
 
     private static boolean hasDefaultGetter(PropertyDescriptor propertyDescriptor) {
         PropertyGetterDescriptor getter = propertyDescriptor.getGetter();
-        return getter == null || getter.isDefault();
+        return getter == null || DescriptorPsiUtilsKt.isDefault(getter);
     }
 }

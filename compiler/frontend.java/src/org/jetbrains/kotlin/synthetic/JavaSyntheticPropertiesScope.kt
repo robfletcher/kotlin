@@ -310,29 +310,17 @@ class JavaSyntheticPropertiesScope(storageManager: StorageManager, private val l
                 val receiverType = typeSubstitutor.safeSubstitute(ownerClass.defaultType, Variance.INVARIANT)
                 descriptor.setType(propertyType, typeParameters, null, receiverType)
 
-                val getter = PropertyGetterDescriptorImpl(descriptor,
-                                                          getMethod.annotations,
-                                                          Modality.FINAL,
-                                                          visibility,
-                                                          false,
-                                                          getMethod.isExternal,
-                                                          CallableMemberDescriptor.Kind.SYNTHESIZED,
-                                                          null,
-                                                          SourceElement.NO_SOURCE)
+                val getter = PropertyGetterDescriptorImpl(
+                        descriptor, getMethod.annotations, Modality.FINAL, visibility, getMethod.isExternal,
+                        CallableMemberDescriptor.Kind.SYNTHESIZED, null, getMethod.source
+                )
                 getter.initialize(null)
 
-                val setter = if (setMethod != null)
-                    PropertySetterDescriptorImpl(descriptor,
-                                                 setMethod.annotations,
-                                                 Modality.FINAL,
-                                                 syntheticExtensionVisibility(setMethod),
-                                                 false,
-                                                 setMethod.isExternal,
-                                                 CallableMemberDescriptor.Kind.SYNTHESIZED,
-                                                 null,
-                                                 SourceElement.NO_SOURCE)
-                else
-                    null
+                val setter = if (setMethod != null) PropertySetterDescriptorImpl(
+                        descriptor, setMethod.annotations, Modality.FINAL, syntheticExtensionVisibility(setMethod),
+                        setMethod.isExternal, CallableMemberDescriptor.Kind.SYNTHESIZED, null, setMethod.source
+                )
+                else null
                 setter?.initializeDefault()
 
                 descriptor.initialize(getter, setter)

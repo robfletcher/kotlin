@@ -29,6 +29,7 @@ import org.jetbrains.kotlin.codegen.intrinsics.IntrinsicMethods
 import org.jetbrains.kotlin.descriptors.CallableMemberDescriptor
 import org.jetbrains.kotlin.descriptors.FunctionDescriptor
 import org.jetbrains.kotlin.descriptors.PropertyDescriptor
+import org.jetbrains.kotlin.descriptors.isDefault
 import org.jetbrains.kotlin.idea.caches.resolve.analyze
 import org.jetbrains.kotlin.idea.caches.resolve.analyzeFully
 import org.jetbrains.kotlin.idea.codeInsight.CodeInsightUtils
@@ -146,7 +147,7 @@ class KotlinSmartStepIntoHandler : JvmSmartStepIntoHandler() {
                     val propertyDescriptor = resolvedCall.resultingDescriptor
                     if (propertyDescriptor is PropertyDescriptor) {
                         val getterDescriptor = propertyDescriptor.getter
-                        if (getterDescriptor != null && !getterDescriptor.isDefault) {
+                        if (getterDescriptor != null && !getterDescriptor.isDefault()) {
                             val delegatedResolvedCall = bindingContext[BindingContext.DELEGATED_PROPERTY_RESOLVED_CALL, getterDescriptor]
                             if (delegatedResolvedCall == null) {
                                 val getter = DescriptorToSourceUtilsIde.getAnyDeclaration(file.project, getterDescriptor)

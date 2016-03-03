@@ -109,21 +109,16 @@ private fun genProperty(
 
     val actualType = if (alwaysCastToView) context.viewType else type
     val flexibleType = DelegatingFlexibleType.create(actualType, actualType.makeNullable(), FlexibleTypeCapabilities.NONE)
-    property.setType(
-            flexibleType,
-            emptyList<TypeParameterDescriptor>(),
-            null,
-            receiverType)
+    property.setType(flexibleType, emptyList(), null, receiverType)
 
     val getter = PropertyGetterDescriptorImpl(
             property,
             Annotations.EMPTY,
             Modality.FINAL,
             Visibilities.PUBLIC,
-            false,
-            false,
+            /* isExternal = */ false,
             CallableMemberDescriptor.Kind.SYNTHESIZED,
-            null,
+            /* original = */ null,
             SourceElement.NO_SOURCE
     )
 

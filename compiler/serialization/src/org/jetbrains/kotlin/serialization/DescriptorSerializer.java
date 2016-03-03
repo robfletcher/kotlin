@@ -237,7 +237,7 @@ public class DescriptorSerializer {
                 builder.setSetterFlags(accessorFlags);
             }
 
-            if (!setter.isDefault()) {
+            if (!DescriptorPsiUtilsKt.isDefault(setter)) {
                 DescriptorSerializer setterLocal = local.createChildSerializer(setter);
                 for (ValueParameterDescriptor valueParameterDescriptor : setter.getValueParameters()) {
                     builder.setSetterValueParameter(setterLocal.valueParameter(valueParameterDescriptor));
@@ -370,7 +370,7 @@ public class DescriptorSerializer {
                 hasAnnotations(accessor),
                 accessor.getVisibility(),
                 accessor.getModality(),
-                !accessor.isDefault(),
+                !DescriptorPsiUtilsKt.isDefault(accessor),
                 accessor.isExternal()
         );
     }

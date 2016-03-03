@@ -40,14 +40,13 @@ public class PropertySetterDescriptorImpl extends PropertyAccessorDescriptorImpl
             @NotNull Annotations annotations,
             @NotNull Modality modality,
             @NotNull Visibility visibility,
-            boolean isDefault,
             boolean isExternal,
             @NotNull Kind kind,
             @Nullable PropertySetterDescriptor original,
             @NotNull SourceElement source
     ) {
         super(modality, visibility, correspondingProperty, annotations, Name.special("<set-" + correspondingProperty.getName() + ">"),
-              isDefault, isExternal, kind, source);
+              isExternal, kind, source);
         this.original = original != null ? original : this;
     }
 
