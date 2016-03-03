@@ -18,52 +18,50 @@ package org.jetbrains.kotlin.codegen.state
 
 import org.jetbrains.kotlin.descriptors.CallableMemberDescriptor
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
-import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
 import org.jetbrains.kotlin.descriptors.TypeParameterDescriptor
-import org.jetbrains.kotlin.descriptors.impl.ClassDescriptorImpl
 import org.jetbrains.kotlin.descriptors.impl.TypeParameterDescriptorImpl
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.types.*
-import org.jetbrains.kotlin.utils.keysToMap
-import java.util.*
+import org.jetbrains.kotlin.types.typeUtil.asTypeProjection
 
 class ReceiverTypeAndTypeParameters(val receiverType: KotlinType, val typeParameters: List<TypeParameterDescriptor>)
 
 fun patchTypeParametersForDefaultImplMethod(function: CallableMemberDescriptor): ReceiverTypeAndTypeParameters {
     val classDescriptor = function.containingDeclaration as ClassDescriptor
-
-    val functionTypeParameters = function.typeParameters.keysToMap { it.name.asString() }
+    val functionTypeParameterNames = function.typeParameters.map { it.name.asString() }
     val interfaceTypeParameters = classDescriptor.declaredTypeParameters
-    val interfaceTypeParameters2Name = interfaceTypeParameters.keysToMap { it.name.asString() }
-    val conflict = LinkedHashMap(interfaceTypeParameters2Name)
-    conflict.values.retainAll(functionTypeParameters.values)
+    val conflictedTypeParameters = interfaceTypeParameters.filter { it.name.asString() in functionTypeParameterNames }
 
-    if (conflict.isNotEmpty()) {
-        val functionTypeParameterNames = function.typeParameters.map { it.name.asString() }.toMutableSet()
+    if (conflictedTypeParameters.isEmpty())
+        return ReceiverTypeAndTypeParameters(classDescriptor.defaultType, interfaceTypeParameters)
 
-        val mappingForInterfaceTypeParameters = conflict.keys.associateBy ({ it }) {
-            typeParameter ->
+    val existingNames = (functionTypeParameterNames + interfaceTypeParameters.map { it.name.asString() }).toMutableSet()
 
-            var newNamePrefix = typeParameter.name.asString() + "_I"
-            var newName = newNamePrefix + generateSequence(1) { x -> x + 1 }.first { index -> newNamePrefix + index !in functionTypeParameterNames }
-            functionTypeParameterNames.add(newName)
-            val newTypeParameter = function.createTypeParameterWithNewName(typeParameter, newName)
-            TypeProjectionImpl(newTypeParameter.defaultType)
+    val mappingForInterfaceTypeParameters = conflictedTypeParameters.associateBy ({ it }) {
+        typeParameter ->
+
+        val newNamePrefix = typeParameter.name.asString() + "_I"
+        val newName = newNamePrefix + generateSequence(1) { x -> x + 1 }.first {
+            index -> (newNamePrefix + index) !in existingNames
         }
 
-        val substitution = TypeConstructorSubstitution.createByParametersMap(mappingForInterfaceTypeParameters)
-        val substitutor = TypeSubstitutor.create(substitution)
-
-        val additionalTypeParameters = interfaceTypeParameters.map { typeParameter ->
-            mappingForInterfaceTypeParameters[typeParameter]?.type?.constructor?.declarationDescriptor as? TypeParameterDescriptor ?: typeParameter
-        }
-        var resultTypeParameters = mutableListOf<TypeParameterDescriptor>()
-        DescriptorSubstitutor.substituteTypeParameters(additionalTypeParameters, substitution, classDescriptor, resultTypeParameters)
-
-        return ReceiverTypeAndTypeParameters(substitutor.substitute(classDescriptor.defaultType, Variance.INVARIANT)!!, resultTypeParameters)
+        existingNames.add(newName)
+        function.createTypeParameterWithNewName(typeParameter, newName)
     }
 
-    return ReceiverTypeAndTypeParameters(classDescriptor.defaultType, interfaceTypeParameters)
+    val substitution = TypeConstructorSubstitution.createByParametersMap(mappingForInterfaceTypeParameters.mapValues {
+        it.value.defaultType.asTypeProjection()
+    })
+
+    val substitutor = TypeSubstitutor.create(substitution)
+
+    val additionalTypeParameters = interfaceTypeParameters.map { typeParameter ->
+        mappingForInterfaceTypeParameters[typeParameter] ?: typeParameter
+    }
+    var resultTypeParameters = mutableListOf<TypeParameterDescriptor>()
+    DescriptorSubstitutor.substituteTypeParameters(additionalTypeParameters, substitution, classDescriptor, resultTypeParameters)
+
+    return ReceiverTypeAndTypeParameters(substitutor.substitute(classDescriptor.defaultType, Variance.INVARIANT)!!, resultTypeParameters)
 }
 
 fun CallableMemberDescriptor.createTypeParameterWithNewName(descriptor: TypeParameterDescriptor, newName: String): TypeParameterDescriptorImpl {

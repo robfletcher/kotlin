@@ -81,7 +81,6 @@ import org.jetbrains.org.objectweb.asm.Type;
 import org.jetbrains.org.objectweb.asm.commons.Method;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static org.jetbrains.kotlin.builtins.KotlinBuiltIns.isUnit;
@@ -1064,7 +1063,7 @@ public class KotlinTypeMapper {
             KotlinType thisIfNeeded = null;
             if (OwnerKind.DEFAULT_IMPLS == kind) {
                 ReceiverTypeAndTypeParameters receiverTypeAndTypeParameters = TypeMapperUtilsKt.patchTypeParametersForDefaultImplMethod(directMember);
-                writeFormalTypeParameters(receiverTypeAndTypeParameters.getTypeParameters(), directMember.getTypeParameters(), sw);
+                writeFormalTypeParameters(CollectionsKt.plus(receiverTypeAndTypeParameters.getTypeParameters(), directMember.getTypeParameters()), sw);
                 thisIfNeeded = receiverTypeAndTypeParameters.getReceiverType();
             }
             else {
@@ -1232,19 +1231,7 @@ public class KotlinTypeMapper {
     }
 
     public void writeFormalTypeParameters(@NotNull List<TypeParameterDescriptor> typeParameters, @NotNull JvmSignatureWriter sw) {
-        writeFormalTypeParameters(Collections.<TypeParameterDescriptor>emptyList(), typeParameters, sw);
-    }
-
-    private void writeFormalTypeParameters(
-            @NotNull List<TypeParameterDescriptor> additionalInterfaceTypeParameters,
-            @NotNull List<TypeParameterDescriptor> typeParameters,
-            @NotNull JvmSignatureWriter sw
-    ) {
         if (sw.skipGenericSignature()) return;
-
-        for (TypeParameterDescriptor typeParameter : additionalInterfaceTypeParameters) {
-            writeFormalTypeParameter(typeParameter, sw);
-        }
 
         for (TypeParameterDescriptor typeParameter : typeParameters) {
             writeFormalTypeParameter(typeParameter, sw);
