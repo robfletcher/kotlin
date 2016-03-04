@@ -36,11 +36,13 @@ inline fun <reified T : Throwable> assertFailsWith(message: String? = null, noin
  * Comments out a [block] of test code until it is implemented while keeping a link to the code
  * to implement in your unit test output
  */
+@kotlin.internal.InlineOnly
 inline fun todo(@Suppress("UNUSED_PARAMETER") block: () -> Unit) {
     System.out.println("TODO at " + currentStackTrace()[1])
 }
 
-@Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN", "NOTHING_TO_INLINE")
+@Suppress("PLATFORM_CLASS_MAPPED_TO_KOTLIN")
+@kotlin.internal.InlineOnly
 inline fun currentStackTrace() = (java.lang.Exception() as java.lang.Throwable).stackTrace
 
 /**
